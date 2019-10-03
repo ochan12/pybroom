@@ -40,5 +40,6 @@ def process():
         update_profile_information(new_object.type, new_object.data)
         
 
-
-run(host='localhost', port=PORT, debug=False)
+if __name__ == "__main__":
+    run(host='0.0.0.0', port=PORT, debug=False)
+    
