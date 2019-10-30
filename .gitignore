@@ -23,6 +23,7 @@ share/
 sdist/
 var/
 wheels/
+.vscode/
 *.egg-info/
 .installed.cfg
 *.egg
