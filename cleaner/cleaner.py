@@ -2,13 +2,15 @@ import requests
 import re
 
 def is_valid_user(dirty_object: dict):
+    print("Checking User")
     if dirty_object.__contains__('author'):
+        print("Object conaints author")
         banned_users = dirty_object['banned_users']
         if banned_users.__contains__(dirty_object['author']):
                 return dict({ "result": False, "reason": 'User Banned'})
         return dict({ "result": True, "reason": 'User is not banned'})
     else:
-        return dict({ "result": False, "reason": 'Field in dirty object wansn\'t found'})
+        return dict({ "result": False, "reason": 'Author field in dirty object wansn\'t found'})
 
 def is_valid_content(dirty_object: dict):
     for bannedWord in dirty_object['banned_words']:
@@ -16,6 +18,12 @@ def is_valid_content(dirty_object: dict):
         if lookup_content:
             return dict({"result": False, "reason": "Banned content found"})
     return dict({"result": True, "reason": "Content is legit"})
+
+def delete_project_fields(dirty_object: dict):
+    for field in ["twitterUsers", "facebookUsers", "instagramUsers", "youtubeUsers", "banned_users", "banned_words", "keywords", "project_name", "project_slug", "createdAt"]:
+        if dirty_object.__contains__(field):
+            dirty_object.__delitem__(field)
+    return dirty_object
 
 def clean_objects(dirty_object:dict):
     clean_object = dirty_object
