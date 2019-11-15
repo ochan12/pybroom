@@ -1,11 +1,15 @@
-from config.env import PORT, DESTINATION_AUTH, DESTINATION_URL
+from config.env import DESTINATION_AUTH, DESTINATION_URL
 import os, base64
 from functools import wraps
 from cleaner import cleaner
 from flask import Flask, request, jsonify, Response
 import json, requests
+from tasks import make_celery
 app = Flask(__name__)
-
+app.config.update(
+    CELERY_BROKER_URL=os.getenv('CELERY_BROKER_URL')
+)
+celery = make_celery(app)
 
 @app.route('/', methods=['GET'])
 def hello():
@@ -16,8 +20,6 @@ def check(authorization_header):
     password = os.getenv('PASSWORD_AUTH')
     encoded_uname_pass = authorization_header.split()[-1]
     encoded_local = base64.b64encode((username + ":" + password).encode('utf-8')).decode('utf-8')
-    print(encoded_local)
-    print(encoded_uname_pass)
     if encoded_uname_pass == encoded_local :
         return True
 
@@ -44,7 +46,7 @@ def process_object(new_object):
                 'Authorization': DESTINATION_AUTH,
                 'Content-Type': 'application/json'
             }
-            req = requests.post(url=DESTINATION_URL, data=json.dumps(clean_object), headers=headers)
+            req = requests.post(url=DESTINATION_URL, data=json.dumps(clean_object), headers=headers,verify=False)
             print("Sent:"+str(new_object)+" - Code: "+str(req.status_code))
             return req.text
         else:
@@ -58,14 +60,20 @@ def process_object(new_object):
 def clean():
     print("New Object to clean!!")
     new_object =  request.json
-    print(new_object)
     try:
-        result = process_object(new_object) 
+        clean_task.delay(new_object)
     except Exception as e:
         print(e)
         return jsonify({'success': False, 'reason': e}), 500
-    return jsonify(result), 200
+    return jsonify({'succes': True}), 200
+
+@celery.task()
+def clean_task(new_object):
+    result = process_object(new_object)
+    return 'Done'
+
+
 
 if __name__ == "__main__":
-    app.run(port=PORT, host='0.0.0.0')
+    app.run(port=8888, host='0.0.0.0')
     

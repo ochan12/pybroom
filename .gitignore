@@ -97,7 +97,7 @@ ENV/
 env.bak/
 venv.bak/
 docker.example*
-
+docker-compose.yml
 # Spyder project settings
 .spyderproject
 .spyproject

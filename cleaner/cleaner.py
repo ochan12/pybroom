@@ -20,7 +20,7 @@ def is_valid_content(dirty_object: dict):
     return dict({"result": True, "reason": "Content is legit"})
 
 def delete_project_fields(dirty_object: dict):
-    for field in ["twitterUsers", "facebookUsers", "instagramUsers", "youtubeUsers", "banned_users", "banned_words", "keywords", "project_name", "project_slug", "createdAt"]:
+    for field in ["twitterUsers", "facebookUsers", "instagramUsers", "youtubeUsers", "banned_users", "banned_words", "keywords", "project_name", "project_slug", "createdAt", "index", "tags"]:
         if dirty_object.__contains__(field):
             dirty_object.__delitem__(field)
     return dirty_object
