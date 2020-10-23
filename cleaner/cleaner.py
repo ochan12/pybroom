@@ -3,8 +3,7 @@ import re
 
 def is_valid_user(dirty_object: dict):
     print("Checking User")
-    if dirty_object.__contains__('author'):
-        print("Object conaints author")
+    if dirty_object.__contains__('author') and "banned_users" in dirty_object:
         banned_users = dirty_object['banned_users']
         if banned_users.__contains__(dirty_object['author']):
                 return dict({ "result": False, "reason": 'User Banned'})
@@ -13,10 +12,11 @@ def is_valid_user(dirty_object: dict):
         return dict({ "result": False, "reason": 'Author field in dirty object wansn\'t found'})
 
 def is_valid_content(dirty_object: dict):
-    for bannedWord in dirty_object['banned_words']:
-        lookup_content = re.search(bannedWord,dirty_object['content'])
-        if lookup_content:
-            return dict({"result": False, "reason": "Banned content found"})
+    if "banned_words" in dirty_object:
+        for bannedWord in dirty_object['banned_words']:
+            lookup_content = re.search(bannedWord,dirty_object['content'])
+            if lookup_content:
+                return dict({"result": False, "reason": "Banned content found"})
     return dict({"result": True, "reason": "Content is legit"})
 
 def delete_project_fields(dirty_object: dict):
