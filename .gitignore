@@ -25,6 +25,7 @@ var/
 wheels/
 .vscode/
 *.egg-info/
+.idea
 .installed.cfg
 *.egg
 MANIFEST
