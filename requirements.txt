@@ -4,7 +4,7 @@ celery==5.2.2
 certifi==2019.9.11
 chardet==3.0.4
 Click==7.0
-Flask==1.1.1
+Flask==2.2.5
 gunicorn==22.0.0
 idna==2.8
 importlib-metadata==0.23
